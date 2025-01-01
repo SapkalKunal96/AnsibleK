@@ -1,0 +1,17 @@
+---
+- name: Install and start apache2 service
+  hosts: ec2_instances
+  become: yes
+  tasks:
+    - name: Install apache2 package
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: Start and enable apache2 service
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: yes
+
