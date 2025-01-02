@@ -1,0 +1,84 @@
+---
+- name: Install Nginx Server and load tooplate html website On Ubuntu
+  hosts: ec2_instances
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: System update
+      shell : apt-get update
+      tags: 
+       - update
+
+    - name: install unzip
+      apt:
+        name: "{{ item }}"
+        state: present
+      tags: 
+         - install_nginx/unzip/zip/tar
+      with_items:
+        - nginx
+        - unzip
+        - zip
+
+    - name: Start Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      tags: 
+         - start
+
+    - name: Check Nginx Status
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+      tags: 
+         - status
+
+    # - name : Copy index.html file
+    #   copy:
+    #     src: index.html
+    #     dest: /var/www/html/index.html
+    #   tags: 
+    #      - copy
+    
+    - name: Download barista_cafe template
+      get_url:
+        url: https://www.tooplate.com/zip-templates/2137_barista_cafe.zip
+        dest: /tmp
+      tags: 
+         - download
+    
+    - name: Unzip barista_cafe template
+      unarchive:
+        src: /tmp/2137_barista_cafe.zip
+        dest: /tmp  
+        remote_src: yes
+      tags: 
+         - unzip
+    
+    - name: Copy barista_cafe template to nginx root directory
+      copy:
+        src: /tmp/2137_barista_cafe/
+        dest: /var/www/html
+        remote_src: yes
+      tags: 
+         - copy_template
+    
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+      tags: 
+         - restart
+    
+    - name: Remove downloaded and zip file from /tmp
+      shell: rm -rf /tmp/2137_barista*
+      tags: 
+         - remove_zip
+
+    
+
+          
+        
