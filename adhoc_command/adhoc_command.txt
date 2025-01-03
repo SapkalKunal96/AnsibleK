@@ -1,0 +1,111 @@
+# adhoc commands for Ansible and output
+
+1. ansible all -m ping
+The output should be a SUCCESS if those hosts are reachable with SSH.
+
+2. ansible all -m command -a uptime
+  ansible all -m shell -a "uptime" --become
+Difference Between Shell and Command Module in Ansible
+Shell module executes all the instructions like you’re executing them using /bin/sh, whereas the command module does not; thus, shell operators like <.>, |, &&, or || won’t work with it.
+
+3. ansible all -m apt -a "name=wget state=present" --become
+You can install packages using ad hoc commands using the package manager for your OS. I’m using Ubuntu, so I’ll be using the apt module.
+
+4. ansible prod -m apt -a "name=wget state=present" --become -f 10
+You can run Ansible ad hoc commands at scale because Ansible offers parallel execution of commands on the servers. By default, Ansible can execute an ad hoc command on 5 nodes at a time. The number of parallel executions can be changed using the fork flag.
+
+If you have a large number of servers, you can use the fork module to deploy packages. The above command will execute on 10 target nodes in parallel.
+
+5. ansible all -m copy -a "src=index.html dest=/tmp"
+ansible all -m command -a ls /tmp
+
+6. ansible all -m file -a "dest=/tmp/index.html state=file" -e gather_facts=false
+This command will check if file is exist or not on the path
+
+7. ansible all -m file -a "dest=/tmp/index.html mode=755 group=root" -e gather_facts=false --become
+You can change the permissions of the file (It needs priviledge escalation)
+
+8. ansible all -m shell -a "systemctl --type=service --state=active"
+
+9. ansible all -m apt -a "name=wget state=absent" -e gather_facts=false --become
+
+10. ansible all -m shell -a "systemctl --type=service --state=active | grep ssh"
+
+. ansible-doc -l
+ansible-doc -l | grep -i ping
+
+
+
+# Ad hoc commands for Ansible and their output
+
+1. `ansible all -m ping`
+   - **Description**: Pings all hosts to check if they are reachable via SSH.
+   - **Output**: SUCCESS if the hosts are reachable.
+
+2. `ansible all -m command -a uptime`
+   - **Description**: Runs the `uptime` command on all hosts.
+   - **Output**: Displays the system uptime for each host.
+
+   `ansible all -m shell -a "uptime" --become`
+   - **Description**: Runs the `uptime` command with elevated privileges.
+   - **Output**: Displays the system uptime for each host.
+
+   `ansible all -m shell -a "uptime | awk -F'load average:' '{print \$2}'"`
+    - **Description**: Runs the `uptime` command and uses `awk` to extract and print the load average on all hosts.
+    - **Output**: Displays the load average for each host.
+
+   **Difference Between Shell and Command Module**:
+   - **Shell Module**: Executes instructions using `/bin/sh`, supports shell operators like `<.>`, `|`, `&&`, `||`.
+   - **Command Module**: Executes commands without using a shell, does not support shell operators.
+
+3. `ansible all -m apt -a "name=wget state=present" --become`
+   - **Description**: Installs the `wget` package on all hosts using the apt package manager.
+   - **Output**: SUCCESS if the package is installed.
+
+4. `ansible prod -m apt -a "name=wget state=present" --become -f 10`
+   - **Description**: Installs the `wget` package on 10 hosts in parallel in the `prod` group.
+   - **Output**: SUCCESS if the package is installed on each host.
+
+5. `ansible all -m copy -a "src=index.html dest=/tmp"`
+   - **Description**: Copies the `index.html` file to the `/tmp` directory on all hosts.
+   - **Output**: SUCCESS if the file is copied.
+
+   `ansible all -m command -a ls /tmp`
+   - **Description**: Lists the contents of the `/tmp` directory on all hosts.
+   - **Output**: Displays the contents of the `/tmp` directory.
+
+6. `ansible all -m file -a "dest=/tmp/index.html state=file" -e gather_facts=false`
+   - **Description**: Checks if the `index.html` file exists at the specified path.
+   - **Output**: SUCCESS if the file exists.
+
+7. `ansible all -m file -a "dest=/tmp/index.html mode=755 group=root" -e gather_facts=false --become`
+   - **Description**: Changes the permissions and group of the `index.html` file.
+   - **Output**: SUCCESS if the permissions and group are changed.
+
+8. `ansible all -m shell -a "systemctl --type=service --state=active"`
+   - **Description**: Lists all active services on all hosts.
+   - **Output**: Displays the active services.
+
+9. `ansible all -m apt -a "name=wget state=absent" -e gather_facts=false --become`
+   - **Description**: Removes the `wget` package from all hosts.
+   - **Output**: SUCCESS if the package is removed.
+
+10. `ansible all -m shell -a "systemctl --type=service --state=active | grep ssh"`
+    - **Description**: Checks if the SSH service is active on all hosts.
+    - **Output**: Displays the SSH service if it is active.
+
+11. `ansible all -m lineinfile -a "path=/tmp/index.html regexp='^%Welcome'     line=Welcome state=present" -e gather_facts=false --become`
+    - **Description**: Ensures that the line "Welcome" is present in the `/tmp/index.html` file on all hosts. If a line starting with "Welcome" is not found, it will be added.
+    - **Output**: SUCCESS if the line is present or added.
+
+12. `ansible all -m replace -a "path=/tmp/index.html regexp='Welcome' replace='Kunal'" -e gather_facts=false --become`
+- **Description**: Replaces occurrences of the word "Welcome" with "Kunal" in the `/tmp/index.html` file on all hosts.
+- **Output**: SUCCESS if the replacement is made.
+
+13. `ansible all -m lineinfile -a "path=/tmp/index.html regexp='Welcome' line='Kunal'" -e gather_facts=false --become`
+- **Description**: Ensures that the line "Kunal" is present in the `/tmp/index.html` file on all hosts. If a line containing "Welcome" is found, it will be replaced with "Kunal".
+- **Output**: SUCCESS if the line is present or replaced.
+
+14. `ansible-doc -l`
+    - **Description**: Lists all available Ansible modules.
+    - **Output**: Displays a list of all modules.
