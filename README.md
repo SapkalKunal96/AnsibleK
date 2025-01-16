@@ -5,6 +5,7 @@
    #The above provided playbook and task execution time which can allow us to identiy slow running playbooks.
    Enable Ansible Log in export ANSIBLE_LOG_PATH=~/ansible.log
    export ANSIBLE_DEBUG=True
+   
 
 1. Adhoc commands *
    ansible -i invfile pvt -m ping
