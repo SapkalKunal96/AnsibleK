@@ -29,10 +29,11 @@ If you are unable to connect to clients, then redis is also be a issue. Disable 
 6. Copy, File, No_Log, Debug *
 7. Verbosity using -vvvv
 9. ignore_errors: true *
-10. block, rescue & always
-11. Vault Encrypt String and File for aws_creds *
-12. shell & command modules *
-13. become_user *
+10. 
+11. block, rescue & always
+12. Vault Encrypt String and File for aws_creds *
+13. shell & command modules *
+14. become_user *
 15. serial option select how many machine can run at a time. serial 1 will run  
     on   one machine only. *
 16. lineinfile *
