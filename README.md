@@ -1,4 +1,5 @@
 #Ansible Topics
+
 0. Enable call backs in ansible.cfg 
    [defaults]
    callbacks_enabled = timer, profile_tasks, profile_roles
