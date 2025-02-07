@@ -7,4 +7,3 @@ resource "null_resource" "webservers" {
   }
   depends_on = [local_file.ansible-inventory-file]
 }
-
