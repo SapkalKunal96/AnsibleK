@@ -6,3 +6,4 @@ locals {
   new_environment          = lower(var.environment)
   projid                   = format("%s-%s", lower(var.vpc_name), lower(var.projid))
 }
+
